@@ -106,9 +106,7 @@ def fetch_flood_zones_for_state(
             break
 
         all_features.extend(features)
-        logger.info(
-            "Retrieved %d features (total so far: %d)", len(features), len(all_features)
-        )
+        logger.info("Retrieved %d features (total so far: %d)", len(features), len(all_features))
 
         if len(features) < batch_size:
             # Last page
@@ -126,9 +124,7 @@ def fetch_flood_zones_for_state(
     # Normalize column names to lowercase
     gdf.columns = [c.lower() for c in gdf.columns]
 
-    logger.info(
-        "Fetched %d flood zone polygons for state FIPS %s", len(gdf), state_fips
-    )
+    logger.info("Fetched %d flood zone polygons for state FIPS %s", len(gdf), state_fips)
     return gdf
 
 
@@ -283,9 +279,7 @@ def run_ingestion(state_fips_list: list[str]) -> None:
                 db.rollback()
                 continue
 
-        logger.info(
-            "=== Ingestion complete. Total records inserted: %d ===", total_inserted
-        )
+        logger.info("=== Ingestion complete. Total records inserted: %d ===", total_inserted)
     finally:
         db.close()
 

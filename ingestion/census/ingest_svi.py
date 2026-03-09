@@ -30,14 +30,11 @@ from app.db.session import SessionLocal
 logger = logging.getLogger(__name__)
 
 # CDC SVI 2022 national CSV (~35MB)
-SVI_CSV_URL = (
-    "https://svi.cdc.gov/Documents/Data/2022_SVI_Data/CSV/SVI2022_US.csv"
-)
+SVI_CSV_URL = "https://svi.cdc.gov/Documents/Data/2022_SVI_Data/CSV/SVI2022_US.csv"
 
 # Fallback: smaller state-level files if national fails
 SVI_STATE_URL = (
-    "https://svi.cdc.gov/Documents/Data/2022_SVI_Data/CSV/States/"
-    "SVI2022_{state_abbr}.csv"
+    "https://svi.cdc.gov/Documents/Data/2022_SVI_Data/CSV/States/SVI2022_{state_abbr}.csv"
 )
 
 
@@ -62,8 +59,7 @@ def fetch_svi_data() -> pd.DataFrame:
     df = pd.read_csv(
         resp.url,
         dtype={"FIPS": str},
-        usecols=["FIPS", "RPL_THEMES", "RPL_THEME1", "RPL_THEME2",
-                 "RPL_THEME3", "RPL_THEME4"],
+        usecols=["FIPS", "RPL_THEMES", "RPL_THEME1", "RPL_THEME2", "RPL_THEME3", "RPL_THEME4"],
         low_memory=False,
     )
 
@@ -93,7 +89,8 @@ def upsert_svi(df: pd.DataFrame, db: Session) -> int:
         Number of records upserted
     """
     # Ensure svi_scores table exists
-    db.execute(text("""
+    db.execute(
+        text("""
         CREATE TABLE IF NOT EXISTS svi_scores (
             geoid           CHAR(11) PRIMARY KEY,
             overall_rank    FLOAT,
@@ -103,7 +100,8 @@ def upsert_svi(df: pd.DataFrame, db: Session) -> int:
             housing_trans   FLOAT,
             updated_at      TIMESTAMP DEFAULT NOW()
         )
-    """))
+    """)
+    )
     db.commit()
 
     inserted = 0
@@ -141,19 +139,18 @@ def upsert_svi(df: pd.DataFrame, db: Session) -> int:
     db.commit()
 
     # Backfill social_vulnerability_score in risk_scores table
-    updated = db.execute(text("""
+    updated = db.execute(
+        text("""
         UPDATE risk_scores rs
         SET social_vulnerability_score = sv.overall_rank
         FROM svi_scores sv
         WHERE rs.tract_geoid = sv.geoid
           AND sv.overall_rank IS NOT NULL
-    """)).rowcount
+    """)
+    ).rowcount
     db.commit()
 
-    logger.info(
-        "SVI upsert complete: %d records. Backfilled %d risk scores.",
-        inserted, updated
-    )
+    logger.info("SVI upsert complete: %d records. Backfilled %d risk scores.", inserted, updated)
     return inserted
 
 

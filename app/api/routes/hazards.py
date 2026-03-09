@@ -55,17 +55,22 @@ def get_hazards_geojson(
             )
 
     elif layer == "seismic":
-        rows = db.execute(
-            select(
-                SeismicHazard.usgs_id,
-                SeismicHazard.magnitude,
-                SeismicHazard.place,
-                SeismicHazard.event_time,
-                text("ST_AsGeoJSON(geom) AS geom_json"),
-            ).select_from(SeismicHazard)
-            .order_by(SeismicHazard.event_time.desc())
-            .limit(500)
-        ).mappings().all()
+        rows = (
+            db.execute(
+                select(
+                    SeismicHazard.usgs_id,
+                    SeismicHazard.magnitude,
+                    SeismicHazard.place,
+                    SeismicHazard.event_time,
+                    text("ST_AsGeoJSON(geom) AS geom_json"),
+                )
+                .select_from(SeismicHazard)
+                .order_by(SeismicHazard.event_time.desc())
+                .limit(500)
+            )
+            .mappings()
+            .all()
+        )
 
         for row in rows:
             features.append(

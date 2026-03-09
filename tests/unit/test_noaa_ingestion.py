@@ -9,6 +9,7 @@ from ingestion.noaa.ingest_alerts import (
 
 # ── _parse_datetime ──
 
+
 def test_parse_datetime_iso_z():
     result = _parse_datetime("2025-06-01T12:00:00Z")
     assert isinstance(result, datetime)
@@ -33,17 +34,20 @@ def test_parse_datetime_invalid():
 
 # ── _parse_geometry ──
 
+
 def test_parse_geometry_polygon():
     feature = {
         "geometry": {
             "type": "Polygon",
-            "coordinates": [[
-                [-97.0, 35.0],
-                [-96.0, 35.0],
-                [-96.0, 36.0],
-                [-97.0, 36.0],
-                [-97.0, 35.0],
-            ]]
+            "coordinates": [
+                [
+                    [-97.0, 35.0],
+                    [-96.0, 35.0],
+                    [-96.0, 36.0],
+                    [-97.0, 36.0],
+                    [-97.0, 35.0],
+                ]
+            ],
         }
     }
     result = _parse_geometry(feature)
@@ -56,13 +60,17 @@ def test_parse_geometry_multipolygon():
     feature = {
         "geometry": {
             "type": "MultiPolygon",
-            "coordinates": [[[
-                [-97.0, 35.0],
-                [-96.0, 35.0],
-                [-96.0, 36.0],
-                [-97.0, 36.0],
-                [-97.0, 35.0],
-            ]]]
+            "coordinates": [
+                [
+                    [
+                        [-97.0, 35.0],
+                        [-96.0, 35.0],
+                        [-96.0, 36.0],
+                        [-97.0, 36.0],
+                        [-97.0, 35.0],
+                    ]
+                ]
+            ],
         }
     }
     result = _parse_geometry(feature)
@@ -82,10 +90,5 @@ def test_parse_geometry_missing():
 
 def test_parse_geometry_point_returns_none():
     """Point geometry cannot be cast to MultiPolygon — should return None."""
-    feature = {
-        "geometry": {
-            "type": "Point",
-            "coordinates": [-97.0, 35.0]
-        }
-    }
+    feature = {"geometry": {"type": "Point", "coordinates": [-97.0, 35.0]}}
     assert _parse_geometry(feature) is None

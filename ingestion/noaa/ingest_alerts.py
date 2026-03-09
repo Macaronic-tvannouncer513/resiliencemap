@@ -245,9 +245,7 @@ def run_ingestion(state: str | None = None, severity: list[str] | None = None) -
     try:
         features = fetch_active_alerts(state=state, severity=severity)
         inserted, updated = upsert_alerts(features, db)
-        logger.info(
-            "NOAA ingestion complete. Inserted: %d, Updated: %d", inserted, updated
-        )
+        logger.info("NOAA ingestion complete. Inserted: %d, Updated: %d", inserted, updated)
     except Exception as e:
         logger.error("NOAA ingestion failed: %s", e)
         db.rollback()

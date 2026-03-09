@@ -38,11 +38,57 @@ CENSUS_TIGER_BASE = "https://www2.census.gov/geo/tiger/TIGER2023/TRACT"
 
 # All 50 states + DC FIPS codes
 ALL_STATE_FIPS = [
-    "01","02","04","05","06","08","09","10","11","12",
-    "13","15","16","17","18","19","20","21","22","23",
-    "24","25","26","27","28","29","30","31","32","33",
-    "34","35","36","37","38","39","40","41","42","44",
-    "45","46","47","48","49","50","51","53","54","55","56",
+    "01",
+    "02",
+    "04",
+    "05",
+    "06",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+    "13",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "35",
+    "36",
+    "37",
+    "38",
+    "39",
+    "40",
+    "41",
+    "42",
+    "44",
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50",
+    "51",
+    "53",
+    "54",
+    "55",
+    "56",
 ]
 
 
@@ -85,9 +131,7 @@ def download_tract_shapefile(state_fips: str) -> gpd.GeoDataFrame:
     if gdf.crs and gdf.crs.to_epsg() != 4326:
         gdf = gdf.to_crs(epsg=4326)
 
-    logger.info(
-        "Downloaded %d census tracts for state %s", len(gdf), state_fips
-    )
+    logger.info("Downloaded %d census tracts for state %s", len(gdf), state_fips)
     return gdf
 
 
@@ -126,6 +170,7 @@ def upsert_tracts(gdf: gpd.GeoDataFrame, state_fips: str, db: Session) -> int:
         # Normalize to MultiPolygon
         if geom.geom_type == "Polygon":
             from shapely.geometry import MultiPolygon
+
             geom = MultiPolygon([geom])
 
         # GEOID is 11 chars: 2 state + 3 county + 6 tract
@@ -196,16 +241,10 @@ def run_ingestion(state_fips_list: list[str]) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Ingest Census TIGER/Line tract boundaries"
-    )
+    parser = argparse.ArgumentParser(description="Ingest Census TIGER/Line tract boundaries")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "--state", nargs="+", help="2-digit state FIPS codes (e.g. --state 48 12)"
-    )
-    group.add_argument(
-        "--all", action="store_true", help="Ingest all 50 states + DC"
-    )
+    group.add_argument("--state", nargs="+", help="2-digit state FIPS codes (e.g. --state 48 12)")
+    group.add_argument("--all", action="store_true", help="Ingest all 50 states + DC")
     args = parser.parse_args()
 
     states = ALL_STATE_FIPS if args.all else args.state

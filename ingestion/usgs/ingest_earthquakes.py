@@ -62,16 +62,16 @@ def fetch_earthquakes(
 
     # Bounding box for US + territories
     if us_only:
-        params.update({
-            "minlatitude": 17.0,
-            "maxlatitude": 72.0,
-            "minlongitude": -180.0,
-            "maxlongitude": -65.0,
-        })
+        params.update(
+            {
+                "minlatitude": 17.0,
+                "maxlatitude": 72.0,
+                "minlongitude": -180.0,
+                "maxlongitude": -65.0,
+            }
+        )
 
-    logger.info(
-        "Fetching USGS earthquakes: last %d days, M%.1f+", days_back, min_magnitude
-    )
+    logger.info("Fetching USGS earthquakes: last %d days, M%.1f+", days_back, min_magnitude)
     resp = requests.get(USGS_API_URL, params=params, timeout=30)
     resp.raise_for_status()
 

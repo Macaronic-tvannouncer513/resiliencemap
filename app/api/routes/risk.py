@@ -19,15 +19,13 @@ def get_county_risk(fips: str, db: Session = Depends(get_db)) -> CountyRiskRespo
 
     - **fips**: 5-digit county FIPS code (e.g. '06037' for Los Angeles County)
     """
-    rows = db.execute(
-        select(RiskScore).where(RiskScore.county_fips == fips)
-    ).scalars().all()
+    rows = db.execute(select(RiskScore).where(RiskScore.county_fips == fips)).scalars().all()
 
     if not rows:
         raise HTTPException(
             status_code=404,
             detail=f"No risk data found for county FIPS {fips}. "
-                   "Run ingestion and risk scoring first.",
+            "Run ingestion and risk scoring first.",
         )
 
     tracts = [RiskScoreResponse.model_validate(r) for r in rows]
