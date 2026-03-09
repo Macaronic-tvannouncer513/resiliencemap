@@ -25,12 +25,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
-[project.urls]
-Homepage = "https://henok256.github.io/resiliencemap"
-Repository = "https://github.com/henok256/resiliencemap"
-Documentation = "https://github.com/henok256/resiliencemap/blob/main/docs/methodology.md"
-"Bug Tracker" = "https://github.com/henok256/resiliencemap/issues"
-
 dependencies = [
     # Web framework
     "fastapi>=0.111.0",
@@ -57,6 +51,12 @@ dependencies = [
     # Scheduling
     "apscheduler>=3.10.0",
 ]
+
+[project.urls]
+Homepage = "https://henok256.github.io/resiliencemap"
+Repository = "https://github.com/henok256/resiliencemap"
+Documentation = "https://github.com/henok256/resiliencemap/blob/main/docs/methodology.md"
+"Bug Tracker" = "https://github.com/henok256/resiliencemap/issues"
 
 [project.optional-dependencies]
 dev = [
