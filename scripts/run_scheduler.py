@@ -24,6 +24,7 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
 from ingestion.census.ingest_svi import run_ingestion as run_svi
+from ingestion.hifld.ingest_infrastructure import run_ingestion as run_infrastructure
 from ingestion.nifc.ingest_wildfires import run_ingestion as run_wildfires
 from ingestion.noaa.ingest_alerts import run_ingestion as run_noaa
 from ingestion.usgs.ingest_earthquakes import run_ingestion as run_usgs
@@ -58,6 +59,12 @@ def job_svi_refresh() -> None:
     """Weekly: refresh CDC SVI scores (published annually, weekly check is sufficient)."""
     logger.info("=== SCHEDULED JOB: CDC SVI refresh ===")
     run_svi()
+
+
+def job_hifld_infrastructure() -> None:
+    """Weekly: refresh HIFLD critical infrastructure data."""
+    logger.info("=== SCHEDULED JOB: HIFLD infrastructure ingestion ===")
+    run_infrastructure()
 
 
 def on_job_event(event: JobExecutionEvent) -> None:
@@ -111,6 +118,16 @@ def main() -> None:
         misfire_grace_time=3600,
     )
 
+    # HIFLD Infrastructure: weekly (relatively static data)
+    scheduler.add_job(
+        job_hifld_infrastructure,
+        trigger=CronTrigger(day_of_week="sun", hour=5),
+        id="hifld_infrastructure",
+        name="HIFLD Infrastructure Ingestion",
+        replace_existing=True,
+        misfire_grace_time=3600,
+    )
+
     logger.info("ResilienceMap scheduler started. Jobs registered:")
     for job in scheduler.get_jobs():
         logger.info("  - %s (%s)", job.name, job.id)
@@ -131,6 +148,11 @@ def main() -> None:
         job_wildfire_incidents()
     except Exception as e:
         logger.error("Initial NIFC wildfire ingestion failed: %s", e)
+
+    try:
+        job_hifld_infrastructure()
+    except Exception as e:
+        logger.error("Initial HIFLD infrastructure ingestion failed: %s", e)
 
     logger.info("Initial ingestion complete. Scheduler now running...")
     scheduler.start()

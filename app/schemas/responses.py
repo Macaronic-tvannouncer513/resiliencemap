@@ -38,6 +38,33 @@ class StormAlertResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class InfrastructureResponse(BaseModel):
+    hifld_id: str
+    facility_type: str
+    name: str
+    address: str | None
+    city: str | None
+    state_fips: str | None
+    capacity: int | None
+    status: str | None
+    latitude: float
+    longitude: float
+
+    model_config = {"from_attributes": True}
+
+
+class AtRiskInfrastructureResponse(BaseModel):
+    hifld_id: str
+    facility_type: str
+    name: str
+    address: str | None
+    city: str | None
+    state_fips: str | None
+    capacity: int | None
+    composite_score: float
+    tract_geoid: str
+
+
 class GeoJSONFeature(BaseModel):
     type: str = "Feature"
     geometry: dict[str, Any]

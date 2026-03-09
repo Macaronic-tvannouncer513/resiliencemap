@@ -124,3 +124,26 @@ class RiskScore(Base):
     composite_score: Mapped[float] = mapped_column(Float, nullable=False, index=True)
 
     computed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class CriticalInfrastructure(Base):
+    """HIFLD critical infrastructure facilities (hospitals, schools, power plants)."""
+
+    __tablename__ = "critical_infrastructure"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    hifld_id: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    facility_type: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    address: Mapped[str | None] = mapped_column(String(500))
+    city: Mapped[str | None] = mapped_column(String(100))
+    state_fips: Mapped[str | None] = mapped_column(String(2), index=True)
+    county_fips: Mapped[str | None] = mapped_column(String(5), index=True)
+    capacity: Mapped[int | None] = mapped_column(Integer)
+    status: Mapped[str | None] = mapped_column(String(50))
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    geom: Mapped[bytes] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
+    ingested_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (Index("idx_infra_geom", "geom", postgresql_using="gist"),)

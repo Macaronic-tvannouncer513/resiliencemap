@@ -82,6 +82,27 @@ CREATE INDEX IF NOT EXISTS idx_wildfire_geom  ON wildfire_incidents USING GIST(g
 CREATE INDEX IF NOT EXISTS idx_wildfire_state ON wildfire_incidents(state_fips);
 CREATE INDEX IF NOT EXISTS idx_wildfire_start ON wildfire_incidents(start_date);
 
+-- Critical infrastructure facilities (HIFLD)
+CREATE TABLE IF NOT EXISTS critical_infrastructure (
+    id              SERIAL PRIMARY KEY,
+    hifld_id        VARCHAR(64) NOT NULL UNIQUE,
+    facility_type   VARCHAR(20) NOT NULL,  -- 'hospital', 'school', 'power_plant'
+    name            VARCHAR(255) NOT NULL,
+    address         VARCHAR(500),
+    city            VARCHAR(100),
+    state_fips      CHAR(2),
+    county_fips     CHAR(5),
+    capacity        INTEGER,               -- beds / enrollment / MW
+    status          VARCHAR(50),
+    latitude        FLOAT NOT NULL,
+    longitude       FLOAT NOT NULL,
+    geom            GEOMETRY(POINT, 4326) NOT NULL,
+    ingested_at     TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_infra_geom     ON critical_infrastructure USING GIST(geom);
+CREATE INDEX IF NOT EXISTS idx_infra_state    ON critical_infrastructure(state_fips);
+CREATE INDEX IF NOT EXISTS idx_infra_type     ON critical_infrastructure(facility_type);
+
 -- Risk scores (one row per tract, updated on each scoring run)
 CREATE TABLE IF NOT EXISTS risk_scores (
     id                        SERIAL PRIMARY KEY,

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.routes import alerts, hazards, health, risk
+from app.api.routes import alerts, hazards, health, infrastructure, risk
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -35,6 +35,7 @@ app.include_router(health.router, tags=["Health"])
 app.include_router(risk.router, prefix=settings.api_prefix, tags=["Risk Scores"])
 app.include_router(hazards.router, prefix=settings.api_prefix, tags=["Hazards"])
 app.include_router(alerts.router, prefix=settings.api_prefix, tags=["Alerts"])
+app.include_router(infrastructure.router, prefix=settings.api_prefix, tags=["Infrastructure"])
 
 # Serve map dashboard as static files
 app.mount("/dashboard", StaticFiles(directory="dashboard", html=True), name="dashboard")

@@ -257,8 +257,8 @@
           <div class="stat-lbl">Active Fires</div>
         </div>
         <div class="stat">
-          <div class="stat-val" id="cntSevere" style="color:#eab308">—</div>
-          <div class="stat-lbl">Severe</div>
+          <div class="stat-val" id="cntInfra" style="color:#14b8a6">—</div>
+          <div class="stat-lbl">Facilities</div>
         </div>
       </div>
     </div>
@@ -292,6 +292,16 @@
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleLayer('wildfires',this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="layer-row">
+        <div class="layer-left">
+          <div class="dot" style="background:#14b8a6"></div>
+          <span class="layer-name">Infrastructure (HIFLD)</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" checked onchange="toggleLayer('infra',this.checked)">
           <span class="slider"></span>
         </label>
       </div>
@@ -337,6 +347,7 @@
   <span>🌍 USGS Earthquake Catalog</span>
   <span>⛈️ NOAA NWS</span>
   <span>🔥 NIFC Wildfire Perimeters</span>
+  <span>🏥 HIFLD Infrastructure</span>
   <span>📊 US Census TIGER/Line</span>
   <span>🔬 CDC/ATSDR SVI</span>
 </div>
@@ -351,6 +362,7 @@
 const NOAA_API  = 'https://api.weather.gov/alerts/active?status=actual&message_type=alert';
 const USGS_API  = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=2.5&orderby=time&limit=200&minlatitude=17&maxlatitude=72&minlongitude=-180&maxlongitude=-65';
 const NIFC_API  = 'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters/FeatureServer/0/query?where=1%3D1&outFields=poly_IncidentName,poly_GISAcres,attr_PercentContained,attr_FireCause,attr_FireDiscoveryDateTime&outSR=4326&f=geojson&resultRecordCount=500';
+const HIFLD_API = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Hospitals_1/FeatureServer/0/query?where=1%3D1&outFields=ID,NAME,ADDRESS,CITY,STATE,BEDS,STATUS,LATITUDE,LONGITUDE&outSR=4326&f=geojson&resultRecordCount=2000';
 
 // Leaflet map
 const map = L.map('map', { center: [39.5, -98.35], zoom: 4 });
@@ -364,6 +376,7 @@ const layers = {
   alerts:    L.layerGroup().addTo(map),
   quakes:    L.layerGroup().addTo(map),
   wildfires: L.layerGroup().addTo(map),
+  infra:     L.layerGroup().addTo(map),
   flood:     L.layerGroup().addTo(map),
 };
 
@@ -521,6 +534,43 @@ async function loadWildfires() {
   }
 }
 
+// ── HIFLD Infrastructure (Hospitals) ──
+async function loadInfrastructure() {
+  try {
+    const r = await fetch(HIFLD_API);
+    if (!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    const features = data.features || [];
+
+    layers.infra.clearLayers();
+    document.getElementById('cntInfra').textContent = features.length;
+
+    features.forEach(f => {
+      if (!f.geometry) return;
+      const [lon, lat] = f.geometry.coordinates;
+      const p = f.properties || {};
+
+      L.circleMarker([lat, lon], {
+        radius: 4,
+        fillColor: '#14b8a6', color: '#e2e8f0',
+        weight: 0.8, opacity: .9, fillOpacity: .7,
+      })
+      .bindPopup(`
+        <div class="ptitle">🏥 ${p.NAME || 'Unknown'}</div>
+        <div class="prow"><span>City</span><span class="pval">${p.CITY || '—'}, ${p.STATE || '—'}</span></div>
+        <div class="prow"><span>Beds</span><span class="pval">${p.BEDS ? Number(p.BEDS).toLocaleString() : '—'}</span></div>
+        <div class="prow"><span>Status</span><span class="pval">${p.STATUS || '—'}</span></div>
+        <div class="psrc">Source: HIFLD</div>
+      `)
+      .addTo(layers.infra);
+    });
+
+  } catch(e) {
+    console.warn('HIFLD fetch failed:', e);
+    document.getElementById('cntInfra').textContent = '—';
+  }
+}
+
 // ── FEMA Flood Zones (sample — WMS tiles) ──
 // For the static GitHub Pages build we use FEMA's public WMS tile service
 // which requires no API key and renders flood zones at zoom 10+
@@ -542,14 +592,14 @@ function loadFloodLayer() {
 // ── Bootstrap ──
 async function init() {
   loadFloodLayer();
-  await Promise.all([loadAlerts(), loadQuakes(), loadWildfires()]);
+  await Promise.all([loadAlerts(), loadQuakes(), loadWildfires(), loadInfrastructure()]);
   document.getElementById('loading').style.display = 'none';
   document.getElementById('updatedAt').textContent = 'Updated ' + new Date().toLocaleTimeString();
 }
 
 // Auto-refresh every 5 minutes
 setInterval(async () => {
-  await Promise.all([loadAlerts(), loadQuakes(), loadWildfires()]);
+  await Promise.all([loadAlerts(), loadQuakes(), loadWildfires(), loadInfrastructure()]);
   document.getElementById('updatedAt').textContent = 'Updated ' + new Date().toLocaleTimeString();
 }, 5 * 60 * 1000);
 

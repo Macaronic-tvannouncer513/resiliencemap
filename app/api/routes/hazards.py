@@ -6,7 +6,7 @@ from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.hazard import FloodZone, SeismicHazard, WildfireIncident
+from app.models.hazard import CriticalInfrastructure, FloodZone, SeismicHazard, WildfireIncident
 from app.schemas.responses import GeoJSONFeature, GeoJSONFeatureCollection
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def get_hazards_geojson(
     """
     Return hazard data as a GeoJSON FeatureCollection for map rendering.
 
-    - **layer**: 'flood' (FEMA NFHL), 'seismic' (USGS earthquakes), or 'wildfire' (NIFC)
+    - **layer**: 'flood', 'seismic', 'wildfire', or 'infrastructure'
     - **state_fips**: optional 2-digit state FIPS to filter
     """
     features: list[GeoJSONFeature] = []
@@ -120,6 +120,39 @@ def get_hazards_geojson(
                             row["start_date"].isoformat() if row["start_date"] else None
                         ),
                         "layer": "wildfire",
+                    },
+                )
+            )
+
+    elif layer == "infrastructure":
+        query = (
+            select(
+                CriticalInfrastructure.hifld_id,
+                CriticalInfrastructure.facility_type,
+                CriticalInfrastructure.name,
+                CriticalInfrastructure.capacity,
+                CriticalInfrastructure.status,
+                text("ST_AsGeoJSON(geom) AS geom_json"),
+            )
+            .select_from(CriticalInfrastructure)
+            .limit(5000)
+        )
+
+        if state_fips:
+            query = query.where(CriticalInfrastructure.state_fips == state_fips)
+
+        rows = db.execute(query).mappings().all()
+        for row in rows:
+            features.append(
+                GeoJSONFeature(
+                    geometry=json.loads(row["geom_json"]),
+                    properties={
+                        "id": row["hifld_id"],
+                        "facility_type": row["facility_type"],
+                        "name": row["name"],
+                        "capacity": row["capacity"],
+                        "status": row["status"],
+                        "layer": "infrastructure",
                     },
                 )
             )

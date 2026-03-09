@@ -418,6 +418,10 @@
             <div class="stat-label">Active Fires</div>
           </div>
           <div class="stat-card">
+            <div class="stat-value" id="statInfra" style="color:#14b8a6">—</div>
+            <div class="stat-label">Facilities</div>
+          </div>
+          <div class="stat-card">
             <div class="stat-value" id="statHighRisk" style="color:#a855f7">—</div>
             <div class="stat-label">High Risk Tracts</div>
           </div>
@@ -457,6 +461,17 @@
           </div>
           <label class="toggle">
             <input type="checkbox" id="toggleWildfires" checked onchange="toggleLayer('wildfires', this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="layer-toggle">
+          <div class="layer-info">
+            <div class="layer-dot" style="background:#14b8a6"></div>
+            <span class="layer-label">Infrastructure</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="toggleInfra" checked onchange="toggleLayer('infra', this.checked)">
             <span class="toggle-slider"></span>
           </label>
         </div>
@@ -541,6 +556,7 @@
       alerts:    L.layerGroup().addTo(map),
       quakes:    L.layerGroup().addTo(map),
       wildfires: L.layerGroup().addTo(map),
+      infra:     L.layerGroup().addTo(map),
       flood:     L.layerGroup().addTo(map),
       risk:      L.layerGroup().addTo(map),
     };
@@ -780,6 +796,51 @@
       }
     }
 
+    // ── Fetch & render infrastructure ──
+    async function loadInfrastructure() {
+      try {
+        const res = await fetch(`${API}/hazards/geojson?layer=infrastructure`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        layers.infra.clearLayers();
+        document.getElementById('statInfra').textContent = data.features.length;
+
+        const typeIcons = { hospital: '🏥', school: '🏫', power_plant: '⚡' };
+        const typeColors = { hospital: '#ef4444', school: '#3b82f6', power_plant: '#eab308' };
+
+        data.features.forEach(f => {
+          const coords = f.geometry.coordinates;
+          const props = f.properties;
+          const ftype = props.facility_type || 'unknown';
+          const color = typeColors[ftype] || '#14b8a6';
+
+          const marker = L.circleMarker([coords[1], coords[0]], {
+            radius: 5,
+            fillColor: color,
+            color: '#e2e8f0',
+            weight: 1,
+            opacity: 0.9,
+            fillOpacity: 0.7,
+          });
+
+          marker.bindPopup(`
+            <div class="popup-title">${typeIcons[ftype] || '🏢'} ${props.name || 'Unknown'}</div>
+            <div class="popup-row"><span>Type</span><span class="popup-value">${ftype}</span></div>
+            <div class="popup-row"><span>Status</span><span class="popup-value">${props.status || '—'}</span></div>
+            <div class="popup-row"><span>Capacity</span><span class="popup-value">${props.capacity ? props.capacity.toLocaleString() : '—'}</span></div>
+            <div style="margin-top:6px;font-size:10px;color:#64748b">Source: HIFLD</div>
+          `);
+          layers.infra.addLayer(marker);
+        });
+
+        return data.features.length;
+      } catch (e) {
+        document.getElementById('statInfra').textContent = 'N/A';
+        return 0;
+      }
+    }
+
     // ── Fetch & render flood zones ──
     async function loadFloodZones() {
       try {
@@ -862,6 +923,7 @@
         loadAlerts(),
         loadEarthquakes(),
         loadWildfires(),
+        loadInfrastructure(),
         loadFloodZones(),
         loadRiskScores(),
       ]);
