@@ -1,6 +1,6 @@
 # ResilienceMap: Building Open-Source Disaster Risk Intelligence for US Municipalities
 
-**Henok Haile** | Software Engineer & Civil/Urban Engineer  
+**Henok Mengesha** | Software Engineer & Civil/Urban Engineer  
 *Published on [Medium / SSRN / Dev.to]*
 
 ---

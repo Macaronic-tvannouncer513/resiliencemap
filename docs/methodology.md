@@ -1,7 +1,7 @@
 # ResilienceMap Risk Scoring Methodology
 
 **Version:** 0.1  
-**Author:** Henok Haile  
+**Author:** Henok Mengesha  
 **Date:** 2025
 
 ---

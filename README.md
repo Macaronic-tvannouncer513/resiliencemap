@@ -160,7 +160,7 @@ If you use ResilienceMap in research or policy work, please cite:
 ```bibtex
 @software{resiliencemap2025,
   title  = {ResilienceMap: Open-Source Community Disaster Risk Intelligence Platform},
-  author = {Haile, Henok},
+  author = {Mengesha, Henok},
   year   = {2025},
   url    = {https://github.com/henok256/resiliencemap}
 }
