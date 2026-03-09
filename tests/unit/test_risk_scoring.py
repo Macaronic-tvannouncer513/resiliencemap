@@ -1,6 +1,5 @@
 """Unit tests for the risk scoring engine."""
 
-import pytest
 from processing.score_tracts import (
     WEIGHTS,
     compute_composite_score,

@@ -17,7 +17,7 @@ Usage:
 
 import argparse
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import requests
 from sqlalchemy import text
@@ -49,7 +49,7 @@ def fetch_earthquakes(
     Returns:
         List of earthquake feature dicts from USGS GeoJSON response
     """
-    end_time = datetime.now(timezone.utc)
+    end_time = datetime.now(UTC)
     start_time = end_time - timedelta(days=days_back)
 
     params: dict = {
@@ -127,7 +127,7 @@ def upsert_earthquakes(features: list[dict], db: Session) -> int:
         event_ms = props.get("time")
         if not event_ms:
             continue
-        event_time = datetime.fromtimestamp(event_ms / 1000, tz=timezone.utc)
+        event_time = datetime.fromtimestamp(event_ms / 1000, tz=UTC)
 
         wkt = f"SRID=4326;POINT({lon} {lat})"
 

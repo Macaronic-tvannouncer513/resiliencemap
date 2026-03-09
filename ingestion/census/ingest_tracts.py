@@ -20,9 +20,7 @@ Usage:
 """
 
 import argparse
-import io
 import logging
-import os
 import tempfile
 import zipfile
 from pathlib import Path

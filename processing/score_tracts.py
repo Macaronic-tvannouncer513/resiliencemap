@@ -18,13 +18,12 @@ Usage:
 
 import argparse
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db.session import SessionLocal
-from app.models.hazard import RiskScore
 
 logger = logging.getLogger(__name__)
 

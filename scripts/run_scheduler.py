@@ -16,16 +16,15 @@ Usage:
 
 import logging
 import sys
-import time
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED, JobExecutionEvent
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
+from ingestion.census.ingest_svi import run_ingestion as run_svi
 from ingestion.noaa.ingest_alerts import run_ingestion as run_noaa
 from ingestion.usgs.ingest_earthquakes import run_ingestion as run_usgs
-from ingestion.census.ingest_svi import run_ingestion as run_svi
 
 logging.basicConfig(
     level=logging.INFO,

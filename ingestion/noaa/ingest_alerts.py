@@ -16,16 +16,15 @@ Usage:
 
 import argparse
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import requests
-from shapely.geometry import MultiPolygon, Polygon, mapping, shape
+from shapely.geometry import MultiPolygon, shape
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.db.session import SessionLocal
-from app.models.hazard import StormAlert
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -59,7 +58,10 @@ def fetch_active_alerts(
         params["severity"] = ",".join(severity)
 
     headers = {
-        "User-Agent": "ResilienceMap/0.1 (https://github.com/henok256/resiliencemap; open-source disaster risk platform)",
+        "User-Agent": (
+            "ResilienceMap/0.1 (https://github.com/henok256/resiliencemap;"
+            " open-source disaster risk platform)"
+        ),
         "Accept": "application/geo+json",
     }
 
@@ -122,7 +124,7 @@ def _parse_datetime(dt_str: str | None) -> datetime | None:
         return None
     try:
         dt = datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
-        return dt.astimezone(timezone.utc).replace(tzinfo=None)
+        return dt.astimezone(UTC).replace(tzinfo=None)
     except (ValueError, AttributeError):
         return None
 

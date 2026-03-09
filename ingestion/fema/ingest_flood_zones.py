@@ -18,13 +18,11 @@ Usage:
 
 import argparse
 import logging
-import sys
 import time
 from datetime import datetime
 
 import geopandas as gpd
 import requests
-from shapely.geometry import mapping
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -72,7 +70,8 @@ def fetch_flood_zones_for_state(
 
     while True:
         params = {
-            "where": f"STATE_ABBR IS NOT NULL",  # broad filter; FEMA doesn't support state_fips directly here
+            # broad filter; FEMA doesn't support state_fips directly
+            "where": "STATE_ABBR IS NOT NULL",
             "outFields": "FLD_ZONE,ZONE_SUBTY,SFHA_TF,STATE_ABBR",
             "geometryType": "esriGeometryPolygon",
             "spatialRel": "esriSpatialRelIntersects",

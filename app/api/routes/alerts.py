@@ -1,4 +1,5 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -20,7 +21,7 @@ def get_active_alerts(
 
     - **severity**: filter by 'Extreme', 'Severe', 'Moderate', or 'Minor'
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     query = (
         select(StormAlert)
         .where(StormAlert.expires > now)

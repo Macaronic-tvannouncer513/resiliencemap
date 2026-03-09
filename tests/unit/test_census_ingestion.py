@@ -1,6 +1,5 @@
 """Unit tests for Census TIGER/Line tract ingestion."""
 
-import pytest
 from ingestion.census.ingest_tracts import ALL_STATE_FIPS
 
 

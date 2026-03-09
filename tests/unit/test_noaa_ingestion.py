@@ -1,13 +1,11 @@
 """Unit tests for NOAA NWS alert ingestion."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 
-import pytest
 from ingestion.noaa.ingest_alerts import (
     _parse_datetime,
     _parse_geometry,
 )
-
 
 # ── _parse_datetime ──
 
