@@ -32,7 +32,7 @@ Thousands of US municipalities — especially smaller and underserved ones — l
 
 ```bash
 # 1. Clone the repo
-git clone git@github.com:henok256/resiliencemap.git
+git clone https://github.com/henok256/resiliencemap.git
 cd resiliencemap
 
 # 2. Copy environment config
@@ -160,7 +160,7 @@ If you use ResilienceMap in research or policy work, please cite:
 ```bibtex
 @software{resiliencemap2025,
   title  = {ResilienceMap: Open-Source Community Disaster Risk Intelligence Platform},
-  author = {Mengesha, Henok},
+  author = {Haile, Henok},
   year   = {2025},
   url    = {https://github.com/henok256/resiliencemap}
 }
