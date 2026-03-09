@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResilienceMap — Disaster Risk Intelligence for Every Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07100f;
+      --bg2:       #0c1a18;
+      --border:    #1a2e2a;
+      --green:     #2dff8f;
+      --green-dim: #1a9955;
+      --amber:     #ffb340;
+      --red:       #ff4f4f;
+      --text:      #d4ede7;
+      --muted:     #5a7a72;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(45,255,143,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45,255,143,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(7,16,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--green); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 3rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid var(--green-dim);
+      padding: 0.35rem 0.85rem;
+      border-radius: 2px;
+      margin-bottom: 2.5rem;
+      width: fit-content;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--green);
+    }
+
+    .hero-sub {
+      max-width: 580px;
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.85rem 1.8rem;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #07100f;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* ── RADAR VISUAL ── */
+    .hero-visual {
+      position: absolute;
+      right: -80px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 520px;
+      height: 520px;
+      opacity: 0.18;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .radar-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid var(--green);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .radar-sweep {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 50%;
+      height: 1px;
+      transform-origin: left center;
+      animation: sweep 4s linear infinite;
+    }
+
+    .radar-sweep::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -2px;
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── STATS BAR ── */
+    .stats {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 2rem 0;
+    }
+
+    .stats-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .stat {
+      text-align: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .stat-number {
+      font-family: var(--font-head);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ── SECTION ── */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 3rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--green-dim);
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .pipeline-step {
+      background: var(--bg2);
+      padding: 2rem;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .pipeline-step:hover { background: #111f1c; }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .step-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .step-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── DATA SOURCES ── */
+    .sources-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .source-card {
+      background: var(--bg2);
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      transition: background 0.2s;
+    }
+
+    .source-card:hover { background: #111f1c; }
+
+    .source-logo {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.7rem;
+      border: 1px solid var(--border);
+      color: var(--amber);
+      border-color: rgba(255,179,64,0.3);
+      background: rgba(255,179,64,0.04);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .source-info h3 {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .source-info p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── API PREVIEW ── */
+    .api-block {
+      margin-top: 3rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .api-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .api-tab {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      padding: 0.8rem 1.5rem;
+      color: var(--muted);
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .api-tab.active {
+      color: var(--green);
+      background: rgba(45,255,143,0.04);
+    }
+
+    .api-code {
+      padding: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.9;
+      overflow-x: auto;
+    }
+
+    .c-method { color: #6ee7b7; }
+    .c-url    { color: var(--text); }
+    .c-key    { color: var(--amber); }
+    .c-val    { color: #86efac; }
+    .c-num    { color: #f9a8d4; }
+    .c-muted  { color: var(--muted); }
+
+    /* ── RISK SCORE LEGEND ── */
+    .legend {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 3rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .legend-bar {
+      flex: 1;
+      height: 8px;
+      border-radius: 1px;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 6rem 3rem;
+    }
+
+    .cta-section h2 {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    footer a { color: var(--green-dim); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .hero-visual { display: none; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); padding: 0 1.5rem; }
+      .pipeline { grid-template-columns: 1fr; }
+      .sources-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">ResilienceMap</a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#data">Data sources</a></li>
+    <li><a href="#api">API</a></li>
+    <li><a href="https://github.com/henok256/resiliencemap" target="_blank">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Open Source · Public Good · MIT License</div>
+
+  <h1>Disaster risk<br/>intelligence for<br/><em>every community.</em></h1>
+
+  <p class="hero-sub">
+    Thousands of US municipalities lack the capacity to assess their own disaster risk.
+    ResilienceMap ingests FEMA, USGS, and NOAA data to compute real-time risk scores
+    for every census tract — no GIS expertise required.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://github.com/henok256/resiliencemap" class="btn btn-primary" target="_blank">
+      View on GitHub
+    </a>
+    <a href="docs/methodology.md" class="btn btn-outline">
+      Read Methodology
+    </a>
+  </div>
+
+  <!-- Radar decoration -->
+  <div class="hero-visual" aria-hidden="true">
+    <div class="radar-ring" style="width:100%;height:100%;"></div>
+    <div class="radar-ring" style="width:75%;height:75%;"></div>
+    <div class="radar-ring" style="width:50%;height:50%;"></div>
+    <div class="radar-ring" style="width:25%;height:25%;"></div>
+    <div class="radar-sweep"></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-number">73K+</div>
+      <div class="stat-label">Census tracts covered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Federal data sources</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Risk components scored</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">MIT</div>
+      <div class="stat-label">Open source license</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label">// How it works</div>
+  <h2>From raw federal data<br/>to actionable risk scores</h2>
+  <p style="color:var(--muted); max-width:540px;">
+    A four-stage pipeline that any municipality can run with one command —
+    no GIS department, no vendor contracts.
+  </p>
+
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="step-num">01 / INGEST</div>
+      <div class="step-icon">📥</div>
+      <div class="step-title">Fetch hazard data</div>
+      <div class="step-desc">Automated ingestion of FEMA flood zones, USGS earthquake events, and NOAA storm alerts via public APIs.</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">02 / STORE</div>
+      <div class="step-icon">🗄️</div>
+      <div class="step-title">PostGIS spatial store</div>
+      <div class="step-desc">All geometries stored in PostgreSQL + PostGIS with spatial indexes enabling millisecond intersection queries.</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">03 / SCORE</div>
+      <div class="step-icon">⚡</div>
+      <div class="step-title">Compute risk scores</div>
+      <div class="step-desc">Weighted composite of flood, seismic, storm, and social vulnerability components per census tract.</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">04 / SERVE</div>
+      <div class="step-icon">🌐</div>
+      <div class="step-title">REST API + map dashboard</div>
+      <div class="step-desc">FastAPI endpoints and interactive Leaflet.js map. Query by county FIPS, tract GEOID, or export GeoJSON.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA SOURCES -->
+<section id="data" style="padding-top:0;">
+  <div class="section-label">// Data sources</div>
+  <h2>Built on authoritative<br/>federal datasets</h2>
+
+  <div class="sources-grid">
+    <div class="source-card">
+      <div class="source-logo">FEMA</div>
+      <div class="source-info">
+        <h3>National Flood Hazard Layer</h3>
+        <p>Special Flood Hazard Area polygons covering CONUS. Area-weighted intersection per census tract determines flood exposure score.</p>
+      </div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">USGS</div>
+      <div class="source-info">
+        <h3>Earthquake Event Catalog</h3>
+        <p>Real-time seismic events via FDSN web service. Magnitude-distance decay model scores seismic risk within 500km radius.</p>
+      </div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">NOAA</div>
+      <div class="source-info">
+        <h3>NWS Storm Alerts (CAP)</h3>
+        <p>Active watches, warnings and advisories. Severity-weighted scoring captures current storm exposure for each tract.</p>
+      </div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">CDC</div>
+      <div class="source-info">
+        <h3>Social Vulnerability Index</h3>
+        <p>ATSDR SVI scores incorporate income, housing, and demographic vulnerability factors that amplify physical hazard impact.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API PREVIEW -->
+<section id="api" style="padding-top:0;">
+  <div class="section-label">// REST API</div>
+  <h2>Query risk data<br/>with a single request</h2>
+
+  <div class="api-block">
+    <div class="api-tabs">
+      <div class="api-tab active">County Risk</div>
+      <div class="api-tab" style="color:var(--muted);">Tract Risk</div>
+      <div class="api-tab" style="color:var(--muted);">Active Alerts</div>
+    </div>
+    <div class="api-code">
+<span class="c-method">GET</span>  <span class="c-url">/api/v1/risk/county/<span class="c-key">48201</span></span>
+<br/>
+<span class="c-muted">{</span>
+  <span class="c-key">"county_fips"</span><span class="c-muted">:</span>  <span class="c-val">"48201"</span><span class="c-muted">,</span>
+  <span class="c-key">"tract_count"</span><span class="c-muted">:</span> <span class="c-num">786</span><span class="c-muted">,</span>
+  <span class="c-key">"avg_composite_score"</span><span class="c-muted">:</span> <span class="c-num">0.6821</span><span class="c-muted">,</span>
+  <span class="c-key">"max_composite_score"</span><span class="c-muted">:</span> <span class="c-num">0.9314</span><span class="c-muted">,</span>
+  <span class="c-key">"tracts"</span><span class="c-muted">: [</span>
+    <span class="c-muted">{</span>
+      <span class="c-key">"tract_geoid"</span><span class="c-muted">:</span>      <span class="c-val">"48201231800"</span><span class="c-muted">,</span>
+      <span class="c-key">"flood_score"</span><span class="c-muted">:</span>      <span class="c-num">0.8810</span><span class="c-muted">,</span>
+      <span class="c-key">"seismic_score"</span><span class="c-muted">:</span>     <span class="c-num">0.1200</span><span class="c-muted">,</span>
+      <span class="c-key">"storm_score"</span><span class="c-muted">:</span>       <span class="c-num">0.7500</span><span class="c-muted">,</span>
+      <span class="c-key">"composite_score"</span><span class="c-muted">:</span>   <span class="c-num">0.9314</span>
+    <span class="c-muted">}</span>
+  <span class="c-muted">]</span>
+<span class="c-muted">}</span>
+    </div>
+  </div>
+
+  <div style="margin-top:1rem; font-family:var(--font-mono); font-size:0.75rem; color:var(--muted);">
+    48201 = Harris County, TX (Houston) — highest composite score reflects Hurricane Harvey flood exposure
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="section-label" style="margin-bottom:1rem;">// Get involved</div>
+  <h2>Built for the municipalities<br/>that need it most.</h2>
+  <p style="color:var(--muted); max-width:480px; margin:0 auto 2.5rem; font-size:1rem;">
+    Open source, freely deployable, and actively developed.
+    Contributions from GIS engineers, emergency managers, and frontend developers welcome.
+  </p>
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+    <a href="https://github.com/henok256/resiliencemap" class="btn btn-primary" target="_blank">Star on GitHub</a>
+    <a href="https://github.com/henok256/resiliencemap/blob/main/CONTRIBUTING.md" class="btn btn-outline" target="_blank">Contributing Guide</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>ResilienceMap · MIT License · <a href="https://github.com/henok256/resiliencemap" target="_blank">github.com/henok256/resiliencemap</a></p>
+  <p>Built with FEMA · USGS · NOAA · US Census data</p>
+</footer>
+
+</body>
+</html>
