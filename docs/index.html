@@ -378,7 +378,7 @@ const magR = m => Math.max(5, m * 3.8);
 // ── NOAA Storm Alerts ──
 async function loadAlerts() {
   try {
-    const r = await fetch(NOAA_API, { headers: { 'User-Agent': 'ResilienceMap/0.3 github.com/henok256/resiliencemap' } });
+    const r = await fetch(NOAA_API);
     if (!r.ok) throw new Error(r.status);
     const data = await r.json();
     const features = data.features || [];
@@ -417,14 +417,15 @@ async function loadAlerts() {
       }
     });
 
-    document.getElementById('cntAlerts').textContent  = features.length;
-    document.getElementById('cntExtreme').textContent = extreme;
-    document.getElementById('cntSevere').textContent  = severe;
+    document.getElementById('cntAlerts').textContent = features.length;
+    document.getElementById('cntSevere').textContent = severe;
     renderAlertsList(listItems);
 
   } catch(e) {
     console.warn('NOAA fetch failed:', e);
-    document.getElementById('cntAlerts').textContent = 'err';
+    document.getElementById('cntAlerts').textContent = '—';
+    document.getElementById('cntSevere').textContent = '—';
+    renderAlertsList([]);
   }
 }
 
@@ -477,7 +478,7 @@ async function loadQuakes() {
 
   } catch(e) {
     console.warn('USGS fetch failed:', e);
-    document.getElementById('cntQuakes').textContent = 'err';
+    document.getElementById('cntQuakes').textContent = '—';
   }
 }
 
@@ -516,7 +517,7 @@ async function loadWildfires() {
 
   } catch(e) {
     console.warn('NIFC fetch failed:', e);
-    document.getElementById('cntWildfires').textContent = 'err';
+    document.getElementById('cntWildfires').textContent = '—';
   }
 }
 
