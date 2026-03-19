@@ -286,20 +286,20 @@
     /* ── Charts panel ── */
     .chart-panel {
       background: var(--bg-secondary); border-top: 1px solid var(--border);
-      height: 220px; flex-shrink: 0;
+      height: 170px; flex-shrink: 0;
       display: flex; gap: 0; overflow: hidden;
       transition: background .3s, border-color .3s;
     }
     .chart-box {
-      flex: 1; padding: 12px 16px;
+      flex: 1; padding: 8px 12px;
       border-right: 1px solid var(--border);
       display: flex; flex-direction: column;
       transition: border-color .3s;
     }
     .chart-box:last-child { border-right: none; }
     .chart-title {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .1em; color: var(--text-muted); margin-bottom: 8px;
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--text-muted); margin-bottom: 4px;
     }
     .chart-wrap { flex: 1; position: relative; }
     .chart-wrap canvas { width: 100% !important; height: 100% !important; }
@@ -329,7 +329,7 @@
     /* Export toolbar */
     .export-bar {
       display: flex; align-items: center; gap: 8px;
-      padding: 6px 16px; background: var(--bg-secondary);
+      padding: 3px 16px; background: var(--bg-secondary);
       border-top: 1px solid var(--border);
       flex-shrink: 0; transition: background .3s, border-color .3s;
     }
